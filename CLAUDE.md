@@ -1,0 +1,167 @@
+# Hub Community Backend
+
+Strapi 5.23.5 headless CMS backend for a community hub platform. Manages events, talks, speakers, communities, comments, ratings, and agendas.
+
+## Tech Stack
+
+- **Framework**: Strapi 5.23.5
+- **Language**: TypeScript 5
+- **Runtime**: Node.js 18.0.0 - 22.x.x
+- **Package Manager**: Yarn (strict — do not use npm)
+- **Database**: SQLite (default), MySQL, or PostgreSQL — driven by `DATABASE_CLIENT` env var
+- **Testing**: Vitest 4.x
+- **Email**: Nodemailer (SMTP via Mailgun)
+- **Deployment**: PM2
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `yarn develop` | Start dev server with hot reload (port 1337) |
+| `yarn build` | Build admin panel for production |
+| `yarn start` | Start production server |
+| `yarn vitest` | Run tests |
+| `make start` | Start with PM2 |
+| `make refresh` | Pull + install + restart (PM2) |
+| `make update` | Pull + install + build + restart (PM2) |
+
+## Project Structure
+
+```
+config/             # Server, database, API, middleware, plugin, admin config
+database/migrations # Database migration scripts
+public/             # Static assets
+src/
+  api/              # API modules (11 entities)
+    agenda/         # User event agendas
+    comment/        # Comments on events/talks/communities
+    comment-reply/  # Threaded comment replies
+    community/      # Communities with organizers, tags, events
+    event/          # Events with talks, tags, location
+    link/           # Social media links
+    location/       # Geographic locations (lat/lng)
+    rate/           # Ratings (1-5) on talks/events
+    speaker/        # Talk speakers with bio, avatar, links
+    tag/            # Tags for events and communities
+    talk/           # Talks within events
+  extensions/
+    users-permissions/  # Custom user auth schema extensions
+types/              # TypeScript type definitions
+```
+
+Each API module follows Strapi's standard layout:
+```
+api/{entity}/
+  content-types/{entity}/schema.json  # Schema, validation, relations
+  controllers/{entity}.ts             # Factory default controller
+  routes/{entity}.ts                  # Factory default router
+  services/{entity}.ts                # Service (some with custom logic)
+```
+
+## Architecture Patterns
+
+### Factory Pattern
+All controllers and routes use Strapi factory defaults. No custom endpoints exist:
+```typescript
+export default factories.createCoreController('api::event.event');
+export default factories.createCoreRouter('api::event.event');
+```
+
+### Soft Deletes
+5 entities use soft delete (Event, Community, Talk, Speaker, Location). The `delete()` method is overridden to set `deleted_at` instead of removing the record:
+```typescript
+async delete(documentId: string, params: any) {
+  return super.update(documentId, {
+    ...params,
+    data: { ...params?.data, deleted_at: new Date() },
+  });
+}
+```
+Entities WITHOUT soft delete: Agenda, Comment, CommentReply, Tag, Link, Rate.
+
+### Slug Generation
+Event and Community auto-generate unique slugs on `create()` and `update()` via `generateUniqueSlug()`:
+- Uses `slugify` with `{ lower: true, strict: true, trim: true }`
+- Max 100 characters, trailing hyphens removed after truncation
+- Collision handling: appends `-2`, `-3`, etc.
+- On update, excludes current entity from uniqueness check via `documentId: { $ne: entityId }`
+- Throws `Error("Title is required to generate slug")` if title is missing
+
+### Schema Validation
+All validation is declarative in `schema.json` files — not in code. Patterns include:
+- `required`, `unique`, `minLength`, `maxLength`, `min`, `max`
+- `regex` for slug format: `^[a-z0-9]+(?:-[a-z0-9]+)*$`
+- `enum` for link types: WEB, LINKEDIN, GITHUB, INSTAGRAM, WHATSAPP, TELEGRAM, OTHER
+- All content types have `draftAndPublish: false`
+
+### Bootstrap
+`src/index.ts` configures password reset email on startup. Sets reset URL to `${PUBLIC_URL}/admin/auth/reset-password` and stores it in the users-permissions plugin store.
+
+## Entity Relationships
+
+### Event
+- has many: talks, agenda, comments
+- belongs to: location (manyToOne)
+- many-to-many: tags, communities
+
+### Community
+- has one: location
+- has many: links, comments
+- many-to-many: events, tags, organizers (User)
+
+### Talk
+- belongs to: event
+- many-to-many: speakers
+- has many: comments
+
+### Speaker
+- has one: user (users_permissions_user)
+- has many: socials (Link)
+- many-to-many: talks
+
+### Location
+- has one: community
+- has many: events
+
+### Agenda
+- belongs to: user, event
+- has many: talks
+
+### Comment
+- belongs to: event, talk, community (polymorphic-like via separate relations)
+- has one: user_creator
+- has many: comment_replies, users_tagged
+
+### Rate
+- has one: user, talk, event
+- value: integer 1-5
+
+### Tag
+- many-to-many: events, communities
+
+### Link
+- belongs to: community
+- social_media enum: WEB | LINKEDIN | GITHUB | INSTAGRAM | WHATSAPP | TELEGRAM | OTHER
+
+## API Configuration
+- Default pagination limit: 25
+- Max pagination limit: 100
+- Count included in responses (`withCount: true`)
+
+## Environment Variables
+See `.env.example` for the full list. Key groups:
+- **Server**: HOST, PORT, APP_KEYS, PUBLIC_URL
+- **Database**: DATABASE_CLIENT, DATABASE_HOST/PORT/NAME/USERNAME/PASSWORD, DATABASE_FILENAME (SQLite)
+- **Auth**: ADMIN_JWT_SECRET, API_TOKEN_SALT, TRANSFER_TOKEN_SALT
+- **Email**: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_DEFAULT_FROM, EMAIL_DEFAULT_REPLY_TO
+
+## Testing
+- Framework: Vitest 4.x
+- Test files co-located with services: `src/api/{entity}/services/{entity}.test.ts`
+- Mock pattern: create mock strapi with `vi.fn()` for `entityService.findMany`
+- Current coverage: slug generation for events (special chars, truncation, duplicates, edge cases)
+
+## Git Conventions
+- Mix of conventional commits (`feat:`, `fix:`) and informal messages
+- No pre-commit hooks, linting config, or CI/CD enforced
+- Package manager: Yarn (lockfile: yarn.lock)
