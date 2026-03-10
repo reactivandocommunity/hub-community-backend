@@ -24,12 +24,12 @@ export default {
     });
 
     const settings = await pluginStore.get({ key: "email" });
-    const publicUrl =
-      process.env.PUBLIC_URL || "https://manager.hubcommunity.io";
+    const frontendUrl =
+      process.env.FRONTEND_URL || "https://hubcommunity.io";
 
     if (settings && settings.reset_password) {
       // 1. Force update the response_url
-      const resetPasswordUrl = `${publicUrl}/admin/auth/reset-password`;
+      const resetPasswordUrl = `${frontendUrl}/reset-password`;
       settings.reset_password.options.response_url = resetPasswordUrl;
 
       // 2. Hardcode the URL in the message to be 100% sure it's not empty
