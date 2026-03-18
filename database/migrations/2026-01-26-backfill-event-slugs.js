@@ -75,6 +75,13 @@ async function up() {
   strapi.log.info("Starting event slug backfill migration...");
 
   try {
+    // Ensure table exists before querying columns
+    const hasTable = await strapi.db.connection.schema.hasTable("events");
+    if (!hasTable) {
+      strapi.log.info("Events table does not exist yet. Skipping slug backfill.");
+      return;
+    }
+
     // Ensure slug column exists before querying
     const hasSlugColumn = await strapi.db.connection.schema.hasColumn(
       "events",
