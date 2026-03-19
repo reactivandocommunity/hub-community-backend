@@ -813,6 +813,124 @@ export interface ApiTalkTalk extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiVoteVote extends Struct.CollectionTypeSchema {
+  collectionName: 'votes';
+  info: {
+    description: '';
+    displayName: 'Vote';
+    pluralName: 'votes';
+    singularName: 'vote';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    fingerprint: Schema.Attribute.String & Schema.Attribute.Required;
+    ip_address: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::vote.vote'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    voting_option: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::voting-option.voting-option'
+    >;
+    voting_session: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::voting-session.voting-session'
+    >;
+  };
+}
+
+export interface ApiVotingOptionVotingOption
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'voting_options';
+  info: {
+    description: '';
+    displayName: 'Voting Option';
+    pluralName: 'voting-options';
+    singularName: 'voting-option';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::voting-option.voting-option'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    pitch_order: Schema.Attribute.Integer;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    votes: Schema.Attribute.Relation<'oneToMany', 'api::vote.vote'>;
+    voting_session: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::voting-session.voting-session'
+    >;
+  };
+}
+
+export interface ApiVotingSessionVotingSession
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'voting_sessions';
+  info: {
+    description: '';
+    displayName: 'Voting Session';
+    pluralName: 'voting-sessions';
+    singularName: 'voting-session';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    event_id: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::voting-session.voting-session'
+    > &
+      Schema.Attribute.Private;
+    max_votes_per_user: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<1>;
+    publishedAt: Schema.Attribute.DateTime;
+    status: Schema.Attribute.Enumeration<['draft', 'open', 'closed']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'draft'>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    votes: Schema.Attribute.Relation<'oneToMany', 'api::vote.vote'>;
+    voting_options: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::voting-option.voting-option'
+    >;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -1338,6 +1456,9 @@ declare module '@strapi/strapi' {
       'api::speaker.speaker': ApiSpeakerSpeaker;
       'api::tag.tag': ApiTagTag;
       'api::talk.talk': ApiTalkTalk;
+      'api::vote.vote': ApiVoteVote;
+      'api::voting-option.voting-option': ApiVotingOptionVotingOption;
+      'api::voting-session.voting-session': ApiVotingSessionVotingSession;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
