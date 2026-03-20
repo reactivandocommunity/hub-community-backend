@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "voting_sessions",
+  "info": {
+    "singularName": "voting-session",
+    "pluralName": "voting-sessions",
+    "displayName": "Voting Session",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "event_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "open",
+        "closed"
+      ],
+      "default": "draft",
+      "required": true
+    },
+    "max_votes_per_user": {
+      "type": "integer",
+      "default": 1
+    },
+    "voting_options": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::voting-option.voting-option",
+      "mappedBy": "voting_session"
+    },
+    "votes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::vote.vote",
+      "mappedBy": "voting_session"
+    }
+  }
+}

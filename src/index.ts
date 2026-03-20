@@ -17,6 +17,72 @@ export default {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }: { strapi: any }) {
+    // Grant public permissions for voting
+    try {
+      const publicRole = await strapi.db.query('plugin::users-permissions.role').findOne({
+        where: { type: 'public' },
+      });
+
+      if (publicRole) {
+        // Permissions to grant
+        const permissionsToGrant = [
+          'api::voting-session.voting-session.find',
+          'api::voting-session.voting-session.findOne',
+          'api::voting-session.voting-session.getResults',
+          'api::voting-option.voting-option.find',
+          'api::voting-option.voting-option.findOne',
+          'api::vote.vote.create',
+        ];
+
+        for (const action of permissionsToGrant) {
+          const existingPermission = await strapi.db.query('plugin::users-permissions.permission').findOne({
+            where: {
+              role: publicRole.id,
+              action: action,
+            },
+          });
+
+          if (!existingPermission) {
+            await strapi.db.query('plugin::users-permissions.permission').create({
+              data: {
+                role: publicRole.id,
+                action: action,
+              },
+            });
+            strapi.log.info(`Granted public permission: ${action}`);
+          }
+        }
+      }
+    } catch (err) {
+      strapi.log.error('Failed to bootstrap voting permissions: ' + err.message);
+    }
+
+    // Add indexes for Performance Considerations (session_id, option_id, fingerprint)
+    try {
+      const knex = strapi.db.connection;
+      const tableExists = await knex.schema.hasTable('votes');
+      if (tableExists) {
+        // Fingerprint index
+        await knex.schema.alterTable('votes', (table) => {
+          table.index(['fingerprint'], 'idx_vote_fingerprint').catch(() => {});
+        }).catch(() => {});
+        
+        // Relation indexes (Strapi might create these automatically, but we ensure them here)
+        // Note: Strapi usually names foreign keys as <relation_name>_id
+        await knex.schema.alterTable('votes', (table) => {
+          table.index(['voting_session_id'], 'idx_vote_session').catch(() => {});
+        }).catch(() => {});
+
+        await knex.schema.alterTable('votes', (table) => {
+          table.index(['voting_option_id'], 'idx_vote_option').catch(() => {});
+        }).catch(() => {});
+        
+        strapi.log.info('Voting performance indexes ensured');
+      }
+    } catch (err) {
+      strapi.log.warn('Could not define custom performance indexes, they might exist or table not ready: ' + err.message);
+    }
+
     // Set the reset password URL programmatically
     const pluginStore = strapi.store({
       type: "plugin",

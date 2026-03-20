@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "voting_options",
+  "info": {
+    "singularName": "voting-option",
+    "pluralName": "voting-options",
+    "displayName": "Voting Option",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "pitch_order": {
+      "type": "integer"
+    },
+    "voting_session": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::voting-session.voting-session",
+      "inversedBy": "voting_options"
+    },
+    "votes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::vote.vote",
+      "mappedBy": "voting_option"
+    }
+  }
+}
