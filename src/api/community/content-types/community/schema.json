@@ -1,82 +1,87 @@
 {
-	"kind": "collectionType",
-	"collectionName": "communities",
-	"info": {
-		"singularName": "community",
-		"pluralName": "communities",
-		"displayName": "Community",
-		"description": ""
-	},
-	"options": {
-		"draftAndPublish": false
-	},
-	"attributes": {
-		"title": {
-			"type": "string"
-		},
-		"short_description": {
-			"type": "text"
-		},
-		"full_description": {
-			"type": "blocks",
-			"required": false
-		},
-		"images": {
-			"type": "media",
-			"multiple": true,
-			"required": false,
-			"allowedTypes": ["images", "files", "videos", "audios"]
-		},
-		"events": {
-			"type": "relation",
-			"relation": "manyToMany",
-			"target": "api::event.event",
-			"inversedBy": "communities"
-		},
-		"tags": {
-			"type": "relation",
-			"relation": "manyToMany",
-			"target": "api::tag.tag",
-			"inversedBy": "communities"
-		},
-		"location": {
-			"type": "relation",
-			"relation": "oneToOne",
-			"target": "api::location.location",
-			"inversedBy": "community"
-		},
-		"founded_in": {
-			"type": "date"
-		},
-		"links": {
-			"type": "relation",
-			"relation": "oneToMany",
-			"target": "api::link.link",
-			"mappedBy": "community"
-		},
-		"members_quantity": {
-			"type": "biginteger"
-		},
-		"organizers": {
-			"type": "relation",
-			"relation": "manyToMany",
-			"target": "plugin::users-permissions.user",
-			"inversedBy": "communities"
-		},
-		"comments": {
-			"type": "relation",
-			"relation": "oneToMany",
-			"target": "api::comment.comment",
-			"mappedBy": "community"
-		},
-		"slug": {
-			"type": "string",
-			"regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-			"unique": true,
-			"required": false
-		},
-		"deleted_at": {
-			"type": "datetime"
-		}
-	}
+  "kind": "collectionType",
+  "collectionName": "communities",
+  "info": {
+    "singularName": "community",
+    "pluralName": "communities",
+    "displayName": "Community",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "short_description": {
+      "type": "text"
+    },
+    "full_description": {
+      "type": "blocks",
+      "required": false
+    },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "events": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::event.event",
+      "inversedBy": "communities"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag",
+      "inversedBy": "communities"
+    },
+    "location": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::location.location",
+      "inversedBy": "community"
+    },
+    "founded_in": {
+      "type": "date"
+    },
+    "links": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::link.link",
+      "mappedBy": "community"
+    },
+    "members_quantity": {
+      "type": "biginteger"
+    },
+    "organizers": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "communities"
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment",
+      "mappedBy": "community"
+    },
+    "slug": {
+      "type": "string",
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "unique": true,
+      "required": false
+    },
+    "deleted_at": {
+      "type": "datetime"
+    }
+  }
 }

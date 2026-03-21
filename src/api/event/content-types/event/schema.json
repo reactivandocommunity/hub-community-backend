@@ -75,12 +75,18 @@
     },
     "slug": {
       "type": "string",
-      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "required": false,
       "unique": true,
-      "required": false
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
     "deleted_at": {
       "type": "datetime"
+    },
+    "participant": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::participant.participant",
+      "inversedBy": "event"
     }
   }
 }

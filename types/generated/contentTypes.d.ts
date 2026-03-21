@@ -571,6 +571,10 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::event.event'> &
       Schema.Attribute.Private;
     location: Schema.Attribute.Relation<'manyToOne', 'api::location.location'>;
+    participant: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::participant.participant'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.String & Schema.Attribute.Unique;
     start_date: Schema.Attribute.DateTime;
@@ -662,6 +666,39 @@ export interface ApiLocationLocation extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     region: Schema.Attribute.String;
     title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiParticipantParticipant extends Struct.CollectionTypeSchema {
+  collectionName: 'participants';
+  info: {
+    description: 'Collection for participants requesting a participation certificate';
+    displayName: 'Participant';
+    pluralName: 'participants';
+    singularName: 'participant';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    event: Schema.Attribute.Relation<'oneToOne', 'api::event.event'>;
+    identifier: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::participant.participant'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    phone_number: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1452,6 +1489,7 @@ declare module '@strapi/strapi' {
       'api::event.event': ApiEventEvent;
       'api::link.link': ApiLinkLink;
       'api::location.location': ApiLocationLocation;
+      'api::participant.participant': ApiParticipantParticipant;
       'api::rate.rate': ApiRateRate;
       'api::speaker.speaker': ApiSpeakerSpeaker;
       'api::tag.tag': ApiTagTag;
