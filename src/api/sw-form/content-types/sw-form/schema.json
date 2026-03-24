@@ -43,6 +43,9 @@
         "files",
         "videos"
       ]
+    },
+    "accepted_in": {
+      "type": "date"
     }
   }
 }

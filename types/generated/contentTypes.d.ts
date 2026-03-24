@@ -796,6 +796,7 @@ export interface ApiSwFormSwForm extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    accepted_in: Schema.Attribute.Date;
     college: Schema.Attribute.String;
     college_course: Schema.Attribute.String;
     cpf: Schema.Attribute.String &
