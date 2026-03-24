@@ -2,10 +2,24 @@ export default [
   'strapi::logger',
   'strapi::errors',
   'strapi::security',
-  'strapi::cors',
+  {
+    name: 'strapi::cors',
+    config: {
+      origin: '*',
+      headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+    },
+  },
   'strapi::poweredBy',
   'strapi::query',
-  'strapi::body',
+  {
+    name: 'strapi::body',
+    config: {
+      multipart: true,
+      formidable: {
+        maxFileSize: 250 * 1024 * 1024, // 250MB for video uploads
+      },
+    },
+  },
   'strapi::session',
   'strapi::favicon',
   'strapi::public',
