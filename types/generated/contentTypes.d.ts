@@ -785,6 +785,45 @@ export interface ApiSpeakerSpeaker extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiSwFormSwForm extends Struct.CollectionTypeSchema {
+  collectionName: 'sw_forms';
+  info: {
+    displayName: 'SW Form';
+    pluralName: 'sw-forms';
+    singularName: 'sw-form';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    accepted_in: Schema.Attribute.Date;
+    college: Schema.Attribute.String;
+    college_course: Schema.Attribute.String;
+    cpf: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    date_of_birth: Schema.Attribute.Date & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::sw-form.sw-form'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    video: Schema.Attribute.Media<'files' | 'videos'> &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private;
+    whatsapp: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface ApiTagTag extends Struct.CollectionTypeSchema {
   collectionName: 'tags';
   info: {
@@ -1492,6 +1531,7 @@ declare module '@strapi/strapi' {
       'api::participant.participant': ApiParticipantParticipant;
       'api::rate.rate': ApiRateRate;
       'api::speaker.speaker': ApiSpeakerSpeaker;
+      'api::sw-form.sw-form': ApiSwFormSwForm;
       'api::tag.tag': ApiTagTag;
       'api::talk.talk': ApiTalkTalk;
       'api::vote.vote': ApiVoteVote;

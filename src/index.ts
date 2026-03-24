@@ -32,6 +32,8 @@ export default {
           'api::voting-option.voting-option.find',
           'api::voting-option.voting-option.findOne',
           'api::vote.vote.create',
+          'api::sw-form.sw-form.create',
+          'plugin::upload.content-api.upload',
         ];
 
         for (const action of permissionsToGrant) {
