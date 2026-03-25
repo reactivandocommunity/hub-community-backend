@@ -30,9 +30,9 @@
     },
     "event": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "manyToOne",
       "target": "api::event.event",
-      "mappedBy": "participant"
+      "inversedBy": "participants"
     }
   }
 }

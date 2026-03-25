@@ -571,8 +571,8 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::event.event'> &
       Schema.Attribute.Private;
     location: Schema.Attribute.Relation<'manyToOne', 'api::location.location'>;
-    participant: Schema.Attribute.Relation<
-      'oneToOne',
+    participants: Schema.Attribute.Relation<
+      'oneToMany',
       'api::participant.participant'
     >;
     publishedAt: Schema.Attribute.DateTime;
@@ -688,7 +688,7 @@ export interface ApiParticipantParticipant extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     email: Schema.Attribute.Email & Schema.Attribute.Required;
-    event: Schema.Attribute.Relation<'oneToOne', 'api::event.event'>;
+    event: Schema.Attribute.Relation<'manyToOne', 'api::event.event'>;
     identifier: Schema.Attribute.String & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<

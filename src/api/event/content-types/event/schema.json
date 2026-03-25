@@ -82,11 +82,11 @@
     "deleted_at": {
       "type": "datetime"
     },
-    "participant": {
+    "participants": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "oneToMany",
       "target": "api::participant.participant",
-      "inversedBy": "event"
+      "mappedBy": "event"
     }
   }
 }
