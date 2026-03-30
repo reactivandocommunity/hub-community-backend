@@ -87,6 +87,13 @@
       "relation": "oneToMany",
       "target": "api::participant.participant",
       "mappedBy": "event"
+    },
+    "is_online": {
+      "type": "boolean",
+      "default": false
+    },
+    "call_link": {
+      "type": "string"
     }
   }
 }
