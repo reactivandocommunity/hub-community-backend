@@ -1,13 +1,7 @@
 // import type { Core } from '@strapi/strapi';
 
 export default {
-  /**
-   * An asynchronous register function that runs before
-   * your application is initialized.
-   *
-   * This gives you an opportunity to extend code.
-   */
-  register(/* { strapi }: { strapi: Core.Strapi } */) {},
+  // register() is defined below with email-confirmation override
 
   /**
    * An asynchronous bootstrap function that runs before
@@ -209,5 +203,43 @@ export default {
           JSON.stringify(updatedSettings.reset_password.options),
       );
     }
+
+    // Configure email confirmation redirect URL
+    const advancedSettings = await pluginStore.get({ key: "advanced" });
+    if (advancedSettings) {
+      advancedSettings.email_confirmation_redirection = `${frontendUrl}/email-confirmed`;
+      await pluginStore.set({ key: "advanced", value: advancedSettings });
+      strapi.log.info(
+        `Email confirmation redirect configured: ${frontendUrl}/email-confirmed`,
+      );
+    }
+  },
+
+  register({ strapi }: { strapi: any }) {
+    // Override the email-confirmation controller to handle already-confirmed tokens
+    const originalController =
+      strapi.plugin("users-permissions").controller("auth");
+    const originalEmailConfirmation = originalController.emailConfirmation;
+
+    originalController.emailConfirmation = async (ctx: any) => {
+      try {
+        await originalEmailConfirmation(ctx);
+      } catch (err: any) {
+        // If the error is "Invalid token" it means the account is already confirmed
+        const frontendUrl = process.env.FRONTEND_URL || "https://hubcommunity.io";
+        if (
+          err?.message === "Invalid token" ||
+          err?.name === "ValidationError"
+        ) {
+          // Redirect to frontend with already-confirmed flag
+          ctx.redirect(
+            `${frontendUrl}/email-confirmed?already=true`,
+          );
+          return;
+        }
+        throw err;
+      }
+    };
   },
 };
+
