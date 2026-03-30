@@ -1,4 +1,16 @@
 export default ({ env }) => ({
+  "users-permissions": {
+    config: {
+      register: {
+        allowedFields: ["name", "phone"],
+      },
+    },
+  },
+  upload: {
+    config: {
+      sizeLimit: 250 * 1024 * 1024, // 250MB for video uploads
+    },
+  },
   email: {
     config: {
       provider: "nodemailer",

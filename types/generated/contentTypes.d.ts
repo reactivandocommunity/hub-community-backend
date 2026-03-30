@@ -408,6 +408,56 @@ export interface ApiAgendaAgenda extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAnalyticsEventAnalyticsEvent
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'analytics_events';
+  info: {
+    description: 'Generic analytics tracking for visits, clicks, and other user interactions';
+    displayName: 'Analytics Event';
+    pluralName: 'analytics-events';
+    singularName: 'analytics-event';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    event: Schema.Attribute.Relation<'manyToOne', 'api::event.event'>;
+    event_type: Schema.Attribute.Enumeration<
+      [
+        'page_visit',
+        'signup_click',
+        'signup_complete',
+        'share_click',
+        'coupon_applied',
+        'payment_started',
+        'certificate_click',
+      ]
+    > &
+      Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::analytics-event.analytics-event'
+    > &
+      Schema.Attribute.Private;
+    metadata: Schema.Attribute.JSON;
+    publishedAt: Schema.Attribute.DateTime;
+    referrer: Schema.Attribute.String;
+    session_id: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user_agent: Schema.Attribute.Text;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
 export interface ApiCommentReplyCommentReply
   extends Struct.CollectionTypeSchema {
   collectionName: 'comment_replies';
@@ -555,6 +605,7 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
   };
   attributes: {
     agenda: Schema.Attribute.Relation<'oneToMany', 'api::agenda.agenda'>;
+    call_link: Schema.Attribute.String;
     comments: Schema.Attribute.Relation<'oneToMany', 'api::comment.comment'>;
     communities: Schema.Attribute.Relation<
       'manyToMany',
@@ -567,6 +618,7 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     description: Schema.Attribute.Blocks;
     end_date: Schema.Attribute.DateTime;
     images: Schema.Attribute.Media<'images' | 'files' | 'videos', true>;
+    is_online: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::event.event'> &
       Schema.Attribute.Private;
@@ -1472,6 +1524,7 @@ export interface PluginUsersPermissionsUser
     >;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    cover_photo: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1480,17 +1533,22 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    github: Schema.Attribute.String;
+    instagram: Schema.Attribute.String;
+    linkedin: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'plugin::users-permissions.user'
     > &
       Schema.Attribute.Private;
+    name: Schema.Attribute.String;
     password: Schema.Attribute.Password &
       Schema.Attribute.Private &
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    phone: Schema.Attribute.String;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;
@@ -1499,6 +1557,7 @@ export interface PluginUsersPermissionsUser
       'plugin::users-permissions.role'
     >;
     speaker: Schema.Attribute.Relation<'oneToOne', 'api::speaker.speaker'>;
+    twitter: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1508,6 +1567,7 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 3;
       }>;
+    website: Schema.Attribute.String;
   };
 }
 
@@ -1522,6 +1582,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::agenda.agenda': ApiAgendaAgenda;
+      'api::analytics-event.analytics-event': ApiAnalyticsEventAnalyticsEvent;
       'api::comment-reply.comment-reply': ApiCommentReplyCommentReply;
       'api::comment.comment': ApiCommentComment;
       'api::community.community': ApiCommunityCommunity;
