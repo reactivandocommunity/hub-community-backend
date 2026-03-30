@@ -17,46 +17,134 @@ export default {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }: { strapi: any }) {
-    // Grant public permissions for voting
-    try {
-      const publicRole = await strapi.db.query('plugin::users-permissions.role').findOne({
-        where: { type: 'public' },
+    // Helper: grant permissions to a role (idempotent)
+    const grantPermissions = async (roleType: string, actions: string[]) => {
+      const role = await strapi.db.query('plugin::users-permissions.role').findOne({
+        where: { type: roleType },
       });
 
-      if (publicRole) {
-        // Permissions to grant
-        const permissionsToGrant = [
-          'api::voting-session.voting-session.find',
-          'api::voting-session.voting-session.findOne',
-          'api::voting-session.voting-session.getResults',
-          'api::voting-option.voting-option.find',
-          'api::voting-option.voting-option.findOne',
-          'api::vote.vote.create',
-          'api::sw-form.sw-form.create',
-          'plugin::upload.content-api.upload',
-        ];
+      if (!role) {
+        strapi.log.warn(`Role "${roleType}" not found, skipping permissions`);
+        return;
+      }
 
-        for (const action of permissionsToGrant) {
-          const existingPermission = await strapi.db.query('plugin::users-permissions.permission').findOne({
-            where: {
-              role: publicRole.id,
-              action: action,
-            },
+      for (const action of actions) {
+        const existing = await strapi.db.query('plugin::users-permissions.permission').findOne({
+          where: { role: role.id, action },
+        });
+
+        if (!existing) {
+          await strapi.db.query('plugin::users-permissions.permission').create({
+            data: { role: role.id, action },
           });
-
-          if (!existingPermission) {
-            await strapi.db.query('plugin::users-permissions.permission').create({
-              data: {
-                role: publicRole.id,
-                action: action,
-              },
-            });
-            strapi.log.info(`Granted public permission: ${action}`);
-          }
+          strapi.log.info(`Granted ${roleType} permission: ${action}`);
         }
       }
+    };
+
+    try {
+      // ── Public role permissions ──
+      await grantPermissions('public', [
+        // Events (read)
+        'api::event.event.find',
+        'api::event.event.findOne',
+        // Communities (read)
+        'api::community.community.find',
+        'api::community.community.findOne',
+        // Talks (read)
+        'api::talk.talk.find',
+        'api::talk.talk.findOne',
+        // Speakers (read)
+        'api::speaker.speaker.find',
+        'api::speaker.speaker.findOne',
+        // Locations (read)
+        'api::location.location.find',
+        'api::location.location.findOne',
+        // Tags (read)
+        'api::tag.tag.find',
+        'api::tag.tag.findOne',
+        // Voting
+        'api::voting-session.voting-session.find',
+        'api::voting-session.voting-session.findOne',
+        'api::voting-session.voting-session.getResults',
+        'api::voting-option.voting-option.find',
+        'api::voting-option.voting-option.findOne',
+        'api::vote.vote.create',
+        // SW Form
+        'api::sw-form.sw-form.create',
+        // Upload (public upload for cover images)
+        'plugin::upload.content-api.upload',
+        'plugin::upload.content-api.find',
+        'plugin::upload.content-api.findOne',
+      ]);
+
+      // ── Authenticated role permissions ──
+      await grantPermissions('authenticated', [
+        // Events (full CRUD)
+        'api::event.event.find',
+        'api::event.event.findOne',
+        'api::event.event.create',
+        'api::event.event.update',
+        'api::event.event.delete',
+        // Communities (full CRUD)
+        'api::community.community.find',
+        'api::community.community.findOne',
+        'api::community.community.create',
+        'api::community.community.update',
+        'api::community.community.delete',
+        // Talks (full CRUD)
+        'api::talk.talk.find',
+        'api::talk.talk.findOne',
+        'api::talk.talk.create',
+        'api::talk.talk.update',
+        'api::talk.talk.delete',
+        // Speakers (full CRUD)
+        'api::speaker.speaker.find',
+        'api::speaker.speaker.findOne',
+        'api::speaker.speaker.create',
+        'api::speaker.speaker.update',
+        'api::speaker.speaker.delete',
+        // Locations (full CRUD)
+        'api::location.location.find',
+        'api::location.location.findOne',
+        'api::location.location.create',
+        'api::location.location.update',
+        'api::location.location.delete',
+        // Tags (read + create)
+        'api::tag.tag.find',
+        'api::tag.tag.findOne',
+        'api::tag.tag.create',
+        // Agendas (full CRUD)
+        'api::agenda.agenda.find',
+        'api::agenda.agenda.findOne',
+        'api::agenda.agenda.create',
+        'api::agenda.agenda.update',
+        'api::agenda.agenda.delete',
+        // Comments (full CRUD)
+        'api::comment.comment.find',
+        'api::comment.comment.findOne',
+        'api::comment.comment.create',
+        'api::comment.comment.update',
+        'api::comment.comment.delete',
+        // Participants (read + create)
+        'api::participant.participant.find',
+        'api::participant.participant.findOne',
+        'api::participant.participant.create',
+        // Upload (authenticated upload for cover images)
+        'plugin::upload.content-api.upload',
+        'plugin::upload.content-api.find',
+        'plugin::upload.content-api.findOne',
+        // Users (read own profile)
+        'plugin::users-permissions.user.me',
+        // Voting
+        'api::voting-session.voting-session.find',
+        'api::voting-session.voting-session.findOne',
+        'api::voting-option.voting-option.find',
+        'api::voting-option.voting-option.findOne',
+        'api::vote.vote.create',
+      ]);
     } catch (err) {
-      strapi.log.error('Failed to bootstrap voting permissions: ' + err.message);
+      strapi.log.error('Failed to bootstrap permissions: ' + err.message);
     }
 
     // Add indexes for Performance Considerations (session_id, option_id, fingerprint)
