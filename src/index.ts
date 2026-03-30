@@ -134,8 +134,9 @@ export default {
         'plugin::upload.content-api.upload',
         'plugin::upload.content-api.find',
         'plugin::upload.content-api.findOne',
-        // Users (read own profile)
+        // Users (read own profile + update)
         'plugin::users-permissions.user.me',
+        'plugin::users-permissions.user.update',
         // Voting
         'api::voting-session.voting-session.find',
         'api::voting-session.voting-session.findOne',

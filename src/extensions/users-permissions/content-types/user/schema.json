@@ -83,6 +83,10 @@
       "relation": "oneToOne",
       "target": "api::speaker.speaker",
       "inversedBy": "users_permissions_user"
+    },
+    "phone": {
+      "type": "string",
+      "required": false
     }
   }
 }
