@@ -46,6 +46,10 @@
     },
     "accepted_in": {
       "type": "date"
+    },
+    "email": {
+      "type": "email",
+      "required": true
     }
   }
 }
