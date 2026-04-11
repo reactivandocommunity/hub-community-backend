@@ -942,6 +942,40 @@ export interface ApiTalkTalk extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiTeamTeam extends Struct.CollectionTypeSchema {
+  collectionName: 'teams';
+  info: {
+    displayName: 'Team';
+    pluralName: 'teams';
+    singularName: 'team';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    lead: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::team.team'> &
+      Schema.Attribute.Private;
+    logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    members: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::users-permissions.user'
+    >;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiVoteVote extends Struct.CollectionTypeSchema {
   collectionName: 'votes';
   info: {
@@ -1558,6 +1592,7 @@ export interface PluginUsersPermissionsUser
       'plugin::users-permissions.role'
     >;
     speaker: Schema.Attribute.Relation<'oneToOne', 'api::speaker.speaker'>;
+    team: Schema.Attribute.Relation<'manyToOne', 'api::team.team'>;
     twitter: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1596,6 +1631,7 @@ declare module '@strapi/strapi' {
       'api::sw-form.sw-form': ApiSwFormSwForm;
       'api::tag.tag': ApiTagTag;
       'api::talk.talk': ApiTalkTalk;
+      'api::team.team': ApiTeamTeam;
       'api::vote.vote': ApiVoteVote;
       'api::voting-option.voting-option': ApiVotingOptionVotingOption;
       'api::voting-session.voting-session': ApiVotingSessionVotingSession;
