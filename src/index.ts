@@ -124,6 +124,9 @@ export default {
         'api::participant.participant.find',
         'api::participant.participant.findOne',
         'api::participant.participant.create',
+        // SW Form (read)
+        'api::sw-form.sw-form.find',
+        'api::sw-form.sw-form.findOne',
         // Upload (authenticated upload for cover images)
         'plugin::upload.content-api.upload',
         'plugin::upload.content-api.find',
