@@ -94,6 +94,12 @@
     },
     "call_link": {
       "type": "string"
+    },
+    "teams": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::team.team",
+      "mappedBy": "event"
     }
   }
 }

@@ -111,13 +111,14 @@ export default {
         'api::tag.tag.find',
         'api::tag.tag.findOne',
         'api::tag.tag.create',
-        // Teams (full CRUD + changeLead)
+        // Teams (full CRUD + custom actions)
         'api::team.team.find',
         'api::team.team.findOne',
         'api::team.team.create',
         'api::team.team.update',
         'api::team.team.delete',
         'api::team.team.changeLead',
+        'api::team.team.leaveTeam',
         // Agendas (full CRUD)
         'api::agenda.agenda.find',
         'api::agenda.agenda.findOne',

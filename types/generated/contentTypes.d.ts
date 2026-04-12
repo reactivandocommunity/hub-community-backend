@@ -633,6 +633,7 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     subscription_link: Schema.Attribute.String;
     tags: Schema.Attribute.Relation<'manyToMany', 'api::tag.tag'>;
     talks: Schema.Attribute.Relation<'oneToMany', 'api::talk.talk'>;
+    teams: Schema.Attribute.Relation<'oneToMany', 'api::team.team'>;
     title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -956,6 +957,7 @@ export interface ApiTeamTeam extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    event: Schema.Attribute.Relation<'manyToOne', 'api::event.event'>;
     lead: Schema.Attribute.Relation<
       'oneToOne',
       'plugin::users-permissions.user'

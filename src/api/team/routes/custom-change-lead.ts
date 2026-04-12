@@ -6,5 +6,11 @@ export default {
       handler: "team.changeLead",
       config: {},
     },
+    {
+      method: "POST",
+      path: "/teams/:id/leave",
+      handler: "team.leaveTeam",
+      config: {},
+    },
   ],
 };
