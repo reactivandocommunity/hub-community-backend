@@ -57,6 +57,9 @@ export default {
         // Tags (read)
         'api::tag.tag.find',
         'api::tag.tag.findOne',
+        // Teams (read)
+        'api::team.team.find',
+        'api::team.team.findOne',
         // Voting
         'api::voting-session.voting-session.find',
         'api::voting-session.voting-session.findOne',
@@ -108,6 +111,14 @@ export default {
         'api::tag.tag.find',
         'api::tag.tag.findOne',
         'api::tag.tag.create',
+        // Teams (full CRUD + custom actions)
+        'api::team.team.find',
+        'api::team.team.findOne',
+        'api::team.team.create',
+        'api::team.team.update',
+        'api::team.team.delete',
+        'api::team.team.changeLead',
+        'api::team.team.leaveTeam',
         // Agendas (full CRUD)
         'api::agenda.agenda.find',
         'api::agenda.agenda.findOne',
