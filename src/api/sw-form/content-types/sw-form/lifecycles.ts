@@ -10,33 +10,70 @@ export default {
     }
 
     const defaultFrom = process.env.EMAIL_DEFAULT_FROM || 'noreply@example.com';
+    const isVolunteer = result.college_course === 'VOLUNTÁRIO';
+
+    const content = isVolunteer
+      ? {
+          subject: 'Inscrição de Voluntário recebida – Startup Weekend',
+          introHtml:
+            'Recebemos sua inscrição como <strong>voluntário do Startup Weekend Anápolis</strong>. Bora fazer esse evento acontecer!',
+          introText:
+            'Recebemos sua inscrição como voluntário do Startup Weekend Anápolis. Bora fazer esse evento acontecer!',
+          bulletsHtml: [
+            'Nossa equipe vai entrar em contato no <strong>WhatsApp</strong> com os próximos passos da operação.',
+            'Você vai receber os detalhes de função, turnos e benefícios da crew.',
+            'Prepara o hype e vem bombar o evento com a gente!',
+          ],
+          bulletsText: [
+            '- Nossa equipe vai entrar em contato no WhatsApp com os próximos passos da operação.',
+            '- Você vai receber os detalhes de função, turnos e benefícios da crew.',
+            '- Prepara o hype e vem bombar o evento com a gente!',
+          ],
+        }
+      : {
+          subject: 'Inscrição para Apadrinhamento recebida – Startup Weekend',
+          introHtml:
+            'Recebemos sua aplicação para o <strong>apadrinhamento do Startup Weekend Anápolis</strong> com sucesso.',
+          introText:
+            'Recebemos sua aplicação para o apadrinhamento do Startup Weekend Anápolis com sucesso.',
+          bulletsHtml: [
+            'Nossos recrutadores vão analisar seu pitch com atenção.',
+            'Entraremos em contato pelo seu <strong>e-mail</strong> ou <strong>WhatsApp</strong> para informar o resultado.',
+            'Fique colado no seu celular!',
+          ],
+          bulletsText: [
+            '- Nossos recrutadores vão analisar seu pitch com atenção.',
+            '- Entraremos em contato pelo seu e-mail ou WhatsApp para informar o resultado.',
+            '- Fique colado no seu celular!',
+          ],
+        };
 
     try {
       await strapi.plugin('email').service('email').send({
         from: `Pedro Goiania <${defaultFrom}>`,
         to: result.email,
-        subject: 'Inscrição para Apadrinhamento recebida – Startup Weekend',
+        subject: content.subject,
         text: [
           `Olá, ${result.name}!`,
           '',
           'INSCRIÇÃO RECEBIDA!',
           '',
-          'Recebemos sua aplicação para o apadrinhamento do Startup Weekend Anápolis com sucesso.',
+          content.introText,
           '',
           'PRÓXIMOS PASSOS:',
-          '- Nossos recrutadores vão analisar seu pitch com atenção.',
-          '- Entraremos em contato pelo seu e-mail ou WhatsApp para informar o resultado.',
-          '- Fique colado no seu celular!',
+          ...content.bulletsText,
           '',
           'Enquanto isso, acompanhe as novidades em startupweekendanapolis.com.br',
           '',
           'Até logo!',
           'Equipe Startup Weekend Anápolis',
         ].join('\n'),
-        html: buildEmailHtml(result.name),
+        html: buildEmailHtml(result.name, content),
       });
 
-      strapi.log.info(`SW Form confirmation email sent to ${result.email}`);
+      strapi.log.info(
+        `SW Form confirmation email sent to ${result.email} (${isVolunteer ? 'volunteer' : 'apadrinhamento'})`
+      );
     } catch (error) {
       strapi.log.error(
         `Failed to send SW Form confirmation email to ${result.email}: ${error.message}`
@@ -45,7 +82,22 @@ export default {
   },
 };
 
-function buildEmailHtml(name: string): string {
+type EmailContent = {
+  introHtml: string;
+  bulletsHtml: string[];
+};
+
+function buildEmailHtml(name: string, content: EmailContent): string {
+  const bulletRows = content.bulletsHtml
+    .map(
+      (bullet) => `
+                                        <tr>
+                                          <td style="padding:6px 0;font-size:15px;font-weight:700;color:#000000;vertical-align:top;width:24px;">&#9654;</td>
+                                          <td style="padding:6px 0;font-size:15px;font-weight:700;color:#000000;">${bullet}</td>
+                                        </tr>`
+    )
+    .join('');
+
   return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -99,7 +151,7 @@ function buildEmailHtml(name: string): string {
                                   Olá, ${name}!
                                 </p>
                                 <p style="font-size:16px;color:#333333;margin:12px 0 0 0;line-height:1.5;">
-                                  Recebemos sua aplicação para o <strong>apadrinhamento do Startup Weekend Anápolis</strong> com sucesso.
+                                  ${content.introHtml}
                                 </p>
                               </td>
                             </tr>
@@ -113,19 +165,7 @@ function buildEmailHtml(name: string): string {
                                       <div style="font-size:18px;font-weight:900;color:#000000;text-transform:uppercase;letter-spacing:-0.5px;margin-bottom:12px;border-bottom:3px solid #000000;padding-bottom:8px;">
                                         PRÓXIMOS PASSOS
                                       </div>
-                                      <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">
-                                        <tr>
-                                          <td style="padding:6px 0;font-size:15px;font-weight:700;color:#000000;vertical-align:top;width:24px;">&#9654;</td>
-                                          <td style="padding:6px 0;font-size:15px;font-weight:700;color:#000000;">Nossos recrutadores vão analisar seu pitch com atenção.</td>
-                                        </tr>
-                                        <tr>
-                                          <td style="padding:6px 0;font-size:15px;font-weight:700;color:#000000;vertical-align:top;width:24px;">&#9654;</td>
-                                          <td style="padding:6px 0;font-size:15px;font-weight:700;color:#000000;">Entraremos em contato pelo seu <strong>e-mail</strong> ou <strong>WhatsApp</strong> para informar o resultado.</td>
-                                        </tr>
-                                        <tr>
-                                          <td style="padding:6px 0;font-size:15px;font-weight:700;color:#000000;vertical-align:top;width:24px;">&#9654;</td>
-                                          <td style="padding:6px 0;font-size:15px;font-weight:700;color:#000000;">Fique colado no seu celular!</td>
-                                        </tr>
+                                      <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">${bulletRows}
                                       </table>
                                     </td>
                                   </tr>
