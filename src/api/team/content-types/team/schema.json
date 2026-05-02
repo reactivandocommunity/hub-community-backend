@@ -41,6 +41,20 @@
       "relation": "manyToOne",
       "target": "api::event.event",
       "inversedBy": "teams"
+    },
+    "stage": {
+      "type": "enumeration",
+      "enum": [
+        "ZERO",
+        "IDEIA",
+        "PROBLEMA",
+        "VALIDACAO_DO_PROBLEMA",
+        "SOLUCAO",
+        "SOLUCAO_VALIDADA",
+        "MVP",
+        "PITCH",
+        "HERO"
+      ]
     }
   }
 }
