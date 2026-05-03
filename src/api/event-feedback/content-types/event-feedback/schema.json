@@ -1,0 +1,126 @@
+{
+  "kind": "collectionType",
+  "collectionName": "event_feedbacks",
+  "info": {
+    "singularName": "event-feedback",
+    "pluralName": "event-feedbacks",
+    "displayName": "Event Feedback",
+    "description": "Post-event NPS and satisfaction survey responses from participants, mentors and judges"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "role": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "participante",
+        "mentor",
+        "jurado"
+      ]
+    },
+    "respondent_name": {
+      "type": "string"
+    },
+    "respondent_email": {
+      "type": "email"
+    },
+    "event": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::event.event"
+    },
+
+    "nps_score": {
+      "type": "integer",
+      "required": true,
+      "min": 0,
+      "max": 10
+    },
+
+    "meals": {
+      "type": "component",
+      "repeatable": true,
+      "component": "feedback.meal-rating"
+    },
+
+    "structure_venue": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "structure_facilities": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "structure_org_availability": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "structure_org_treatment": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "structure_pre_communication": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "structure_info_completeness": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "structure_punctuality": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "structure_schedule_distribution": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "structure_logistics": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+
+    "mentors_subject_mastery": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "mentors_treatment": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "mentors_journey_support": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "mentors_journey_understanding": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "mentors_availability": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "mentors_doubt_resolution": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "mentors_time_availability": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "mentors_idea_encouragement": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "mentors_felt_supported": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "mentors_interaction_quality": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+
+    "facilitator_subject_mastery": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "facilitator_treatment": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "facilitator_journey_support": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "facilitator_journey_understanding": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "facilitator_availability": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "facilitator_clarity": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "facilitator_motivation": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "facilitator_dynamics": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "facilitator_mediation": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "facilitator_direction": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+
+    "exp_understood_journey": { "type": "boolean" },
+    "exp_event_focus": {
+      "type": "enumeration",
+      "enum": [
+        "somente_startups",
+        "desenvolvimento_pessoal_profissional"
+      ]
+    },
+    "exp_overall_quality": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "exp_would_recommend": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "exp_personal_growth": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "exp_met_expectations": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "exp_career_value": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "exp_collaborative_env": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+    "exp_attend_again": { "type": "enumeration", "enum": ["excelente", "boa", "regular", "ruim"] },
+
+    "suggestions": { "type": "text" },
+
+    "volunteer_interested": { "type": "boolean" },
+    "volunteer_weekday": {
+      "type": "enumeration",
+      "enum": ["segunda", "terca", "quarta", "quinta", "sexta"]
+    },
+    "volunteer_period": {
+      "type": "enumeration",
+      "enum": ["manha", "tarde", "noite"]
+    },
+    "volunteer_modality": {
+      "type": "enumeration",
+      "enum": ["presencial", "remoto", "hibrido"]
+    },
+    "volunteer_resides_local": { "type": "boolean" },
+    "volunteer_work_area": { "type": "string" },
+    "volunteer_education": { "type": "string" },
+    "volunteer_phone": { "type": "string" },
+    "volunteer_email": { "type": "email" },
+    "volunteer_social": { "type": "text" },
+    "volunteer_expectations": { "type": "text" },
+    "volunteer_prior_experience": { "type": "text" },
+    "volunteer_weekly_hours": {
+      "type": "enumeration",
+      "enum": ["menos_1h", "entre_1h_2h", "entre_2h_4h", "mais_4h"]
+    },
+    "volunteer_extra": { "type": "text" }
+  }
+}

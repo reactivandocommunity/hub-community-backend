@@ -592,6 +592,183 @@ export interface ApiCommunityCommunity extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiEventFeedbackEventFeedback
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'event_feedbacks';
+  info: {
+    description: 'Post-event NPS and satisfaction survey responses from participants, mentors and judges';
+    displayName: 'Event Feedback';
+    pluralName: 'event-feedbacks';
+    singularName: 'event-feedback';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    event: Schema.Attribute.Relation<'manyToOne', 'api::event.event'>;
+    exp_attend_again: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    exp_career_value: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    exp_collaborative_env: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    exp_event_focus: Schema.Attribute.Enumeration<
+      ['somente_startups', 'desenvolvimento_pessoal_profissional']
+    >;
+    exp_met_expectations: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    exp_overall_quality: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    exp_personal_growth: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    exp_understood_journey: Schema.Attribute.Boolean;
+    exp_would_recommend: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    facilitator_availability: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    facilitator_clarity: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    facilitator_direction: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    facilitator_dynamics: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    facilitator_journey_support: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    facilitator_journey_understanding: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    facilitator_mediation: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    facilitator_motivation: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    facilitator_subject_mastery: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    facilitator_treatment: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::event-feedback.event-feedback'
+    > &
+      Schema.Attribute.Private;
+    meals: Schema.Attribute.Component<'feedback.meal-rating', true>;
+    mentors_availability: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    mentors_doubt_resolution: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    mentors_felt_supported: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    mentors_idea_encouragement: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    mentors_interaction_quality: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    mentors_journey_support: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    mentors_journey_understanding: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    mentors_subject_mastery: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    mentors_time_availability: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    mentors_treatment: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    nps_score: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 10;
+          min: 0;
+        },
+        number
+      >;
+    publishedAt: Schema.Attribute.DateTime;
+    respondent_email: Schema.Attribute.Email;
+    respondent_name: Schema.Attribute.String;
+    role: Schema.Attribute.Enumeration<['participante', 'mentor', 'jurado']> &
+      Schema.Attribute.Required;
+    structure_facilities: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    structure_info_completeness: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    structure_logistics: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    structure_org_availability: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    structure_org_treatment: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    structure_pre_communication: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    structure_punctuality: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    structure_schedule_distribution: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    structure_venue: Schema.Attribute.Enumeration<
+      ['excelente', 'boa', 'regular', 'ruim']
+    >;
+    suggestions: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    volunteer_education: Schema.Attribute.String;
+    volunteer_email: Schema.Attribute.Email;
+    volunteer_expectations: Schema.Attribute.Text;
+    volunteer_extra: Schema.Attribute.Text;
+    volunteer_interested: Schema.Attribute.Boolean;
+    volunteer_modality: Schema.Attribute.Enumeration<
+      ['presencial', 'remoto', 'hibrido']
+    >;
+    volunteer_period: Schema.Attribute.Enumeration<['manha', 'tarde', 'noite']>;
+    volunteer_phone: Schema.Attribute.String;
+    volunteer_prior_experience: Schema.Attribute.Text;
+    volunteer_resides_local: Schema.Attribute.Boolean;
+    volunteer_social: Schema.Attribute.Text;
+    volunteer_weekday: Schema.Attribute.Enumeration<
+      ['segunda', 'terca', 'quarta', 'quinta', 'sexta']
+    >;
+    volunteer_weekly_hours: Schema.Attribute.Enumeration<
+      ['menos_1h', 'entre_1h_2h', 'entre_2h_4h', 'mais_4h']
+    >;
+    volunteer_work_area: Schema.Attribute.String;
+  };
+}
+
 export interface ApiEventEvent extends Struct.CollectionTypeSchema {
   collectionName: 'events';
   info: {
@@ -872,8 +1049,7 @@ export interface ApiSwFormSwForm extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     video: Schema.Attribute.Media<'files' | 'videos'> &
-      Schema.Attribute.Required &
-      Schema.Attribute.Private;
+      Schema.Attribute.Required;
     whatsapp: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -972,6 +1148,19 @@ export interface ApiTeamTeam extends Struct.CollectionTypeSchema {
     >;
     name: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
+    stage: Schema.Attribute.Enumeration<
+      [
+        'ZERO',
+        'IDEIA',
+        'PROBLEMA',
+        'VALIDACAO_DO_PROBLEMA',
+        'SOLUCAO',
+        'SOLUCAO_VALIDADA',
+        'MVP',
+        'PITCH',
+        'HERO',
+      ]
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1624,6 +1813,7 @@ declare module '@strapi/strapi' {
       'api::comment-reply.comment-reply': ApiCommentReplyCommentReply;
       'api::comment.comment': ApiCommentComment;
       'api::community.community': ApiCommunityCommunity;
+      'api::event-feedback.event-feedback': ApiEventFeedbackEventFeedback;
       'api::event.event': ApiEventEvent;
       'api::link.link': ApiLinkLink;
       'api::location.location': ApiLocationLocation;

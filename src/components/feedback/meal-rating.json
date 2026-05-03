@@ -1,0 +1,50 @@
+{
+  "collectionName": "components_feedback_meal_ratings",
+  "info": {
+    "displayName": "Meal Rating",
+    "description": "Rating for a single meal slot during the event"
+  },
+  "options": {},
+  "attributes": {
+    "meal_slot": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "sex_jantar",
+        "sab_cafe",
+        "sab_almoco",
+        "sab_lanche",
+        "sab_jantar",
+        "dom_cafe",
+        "dom_almoco",
+        "dom_lanche"
+      ]
+    },
+    "quality": {
+      "type": "enumeration",
+      "enum": [
+        "excelente",
+        "boa",
+        "regular",
+        "ruim"
+      ]
+    },
+    "quantity": {
+      "type": "enumeration",
+      "enum": [
+        "suficiente",
+        "pouca",
+        "exagerada"
+      ]
+    },
+    "variety": {
+      "type": "enumeration",
+      "enum": [
+        "excelente",
+        "boa",
+        "regular",
+        "ruim"
+      ]
+    }
+  }
+}
