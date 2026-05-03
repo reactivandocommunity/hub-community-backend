@@ -192,9 +192,12 @@ export default factories.createCoreController('api::team.team', ({ strapi }) => 
       });
 
       return { data: { success: true } };
-    } catch (err) {
+    } catch (err: any) {
       console.error('Upload Error:', err);
-      return ctx.internalServerError('Erro ao fazer upload da apresentação.');
+      return ctx.internalServerError('Erro ao fazer upload da apresentação.', { 
+        detail: err.message || err.toString(),
+        name: err.name,
+      });
     }
   },
 }));
