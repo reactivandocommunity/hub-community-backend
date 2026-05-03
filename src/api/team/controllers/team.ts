@@ -188,7 +188,7 @@ export default factories.createCoreController('api::team.team', ({ strapi }) => 
         documentId: teamDocumentId,
         data: {
           presentation: fileId,
-        },
+        } as any,
       });
 
       return { data: { success: true } };
