@@ -144,4 +144,50 @@ export default factories.createCoreController('api::team.team', ({ strapi }) => 
 
     return { data: { deleted: false } };
   },
+
+  async uploadPresentation(ctx) {
+    const { id: teamDocumentId } = ctx.params;
+    const user = ctx.state.user;
+
+    if (!user) {
+      return ctx.unauthorized('Você precisa estar autenticado.');
+    }
+
+    const files = ctx.request.files as any;
+    if (!files || !files.file) {
+      return ctx.badRequest('Nenhum arquivo enviado. Envie no campo "file".');
+    }
+
+    const team = await strapi.db.query('api::team.team').findOne({
+      where: { documentId: teamDocumentId },
+      populate: { members: true },
+    });
+
+    if (!team) {
+      return ctx.notFound('Time não encontrado.');
+    }
+
+    const isMember = team.members?.some((m: any) => m.id === user.id);
+    if (!isMember) {
+      return ctx.forbidden('Você não é membro deste time para enviar a apresentação.');
+    }
+
+    const uploadService = strapi.plugin('upload').service('upload');
+
+    try {
+      await uploadService.uploadToEntity(
+        {
+          id: team.id,
+          model: 'api::team.team',
+          field: 'presentation',
+        },
+        files.file
+      );
+
+      return { data: { success: true } };
+    } catch (err) {
+      console.error('Upload Error:', err);
+      return ctx.internalServerError('Erro ao fazer upload da apresentação.');
+    }
+  },
 }));

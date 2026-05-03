@@ -55,6 +55,14 @@
         "PITCH",
         "HERO"
       ]
+    },
+    "presentation": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files"
+      ]
     }
   }
 }

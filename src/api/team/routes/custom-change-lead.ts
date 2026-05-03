@@ -12,5 +12,11 @@ export default {
       handler: "team.leaveTeam",
       config: {},
     },
+    {
+      method: "POST",
+      path: "/teams/:id/presentation",
+      handler: "team.uploadPresentation",
+      config: {},
+    },
   ],
 };
