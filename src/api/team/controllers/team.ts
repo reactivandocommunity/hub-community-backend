@@ -175,14 +175,21 @@ export default factories.createCoreController('api::team.team', ({ strapi }) => 
     const uploadService = strapi.plugin('upload').service('upload');
 
     try {
-      await uploadService.uploadToEntity(
-        {
-          id: team.id,
-          model: 'api::team.team',
-          field: 'presentation',
+      const uploadedFiles = await uploadService.upload({
+        data: {}, // no extra file info
+        files: files.file,
+      });
+
+      const fileId = Array.isArray(uploadedFiles)
+        ? uploadedFiles[0].id
+        : (uploadedFiles as any).id;
+
+      await strapi.documents('api::team.team').update({
+        documentId: teamDocumentId,
+        data: {
+          presentation: fileId,
         },
-        files.file
-      );
+      });
 
       return { data: { success: true } };
     } catch (err) {
