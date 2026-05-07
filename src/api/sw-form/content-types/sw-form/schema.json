@@ -17,8 +17,7 @@
     },
     "cpf": {
       "type": "string",
-      "required": true,
-      "unique": true
+      "required": true
     },
     "date_of_birth": {
       "type": "date",
@@ -37,7 +36,6 @@
     "video": {
       "type": "media",
       "multiple": false,
-      "required": true,
       "allowedTypes": [
         "files",
         "videos"
