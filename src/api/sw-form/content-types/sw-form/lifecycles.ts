@@ -11,9 +11,12 @@ export default {
 
     const defaultFrom = process.env.EMAIL_DEFAULT_FROM || 'noreply@example.com';
     const isVolunteer = result.college_course === 'VOLUNTÁRIO';
+    const isCertificado = result.college_course === 'Certificado' || result.college_course === 'CERTIFICADO';
 
-    const content = isVolunteer
-      ? {
+    let content;
+
+    if (isVolunteer) {
+      content = {
           subject: 'Inscrição de Voluntário recebida – Startup Weekend',
           introHtml:
             'Recebemos sua inscrição como <strong>voluntário do Startup Weekend Anápolis</strong>. Bora fazer esse evento acontecer!',
@@ -29,8 +32,27 @@ export default {
             '- Você vai receber os detalhes de função, turnos e benefícios da crew.',
             '- Prepara o hype e vem bombar o evento com a gente!',
           ],
-        }
-      : {
+        };
+    } else if (isCertificado) {
+      content = {
+          subject: 'Confirmação de Dados Recebida – Startup Weekend',
+          introHtml:
+            'Recebemos seus dados para a <strong>emissão do certificado do Startup Weekend Anápolis</strong> com sucesso.',
+          introText:
+            'Recebemos seus dados para a emissão do certificado do Startup Weekend Anápolis com sucesso.',
+          bulletsHtml: [
+            'As informações já estão registradas em nossa base.',
+            'Em breve, o seu certificado de participação será disponibilizado.',
+            'Acompanhe nossos canais para não perder a atualização!',
+          ],
+          bulletsText: [
+            '- As informações já estão registradas em nossa base.',
+            '- Em breve, o seu certificado de participação será disponibilizado.',
+            '- Acompanhe nossos canais para não perder a atualização!',
+          ],
+        };
+    } else {
+      content = {
           subject: 'Inscrição para Apadrinhamento recebida – Startup Weekend',
           introHtml:
             'Recebemos sua aplicação para o <strong>apadrinhamento do Startup Weekend Anápolis</strong> com sucesso.',
@@ -47,6 +69,7 @@ export default {
             '- Fique colado no seu celular!',
           ],
         };
+    }
 
     try {
       await strapi.plugin('email').service('email').send({
